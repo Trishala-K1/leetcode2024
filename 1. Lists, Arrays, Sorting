@@ -8,3 +8,37 @@ class Solution(object):
             else:
                 num_set.add(i)
         return False
+
+## Video Stitching
+class Solution:
+    def videoStitching(self, clips: List[List[int]], time: int) -> int:
+
+        clips.sort(key = lambda x: (x[0],-x[1]))
+        t, cSet, ans = 0, set(), 0
+
+        while clips:
+            while clips and clips[0][1] <= t: clips.pop(0)
+            while clips and clips[0][0] <= t: cSet.add(clips.pop(0)[1])
+
+            if clips and not cSet: return -1
+            t = max(cSet)
+            ans+= 1
+            if t >= time: return ans 
+            cSet.clear()
+
+        return -1
+
+##Container with most water
+class Solution(object):
+    def maxArea(self, height):
+        max_area = 0
+        l = 0
+        r = len(height) - 1
+        while l < r:
+            area = (r - l) * min(height[r], height[l])
+            max_area = max(max_area, area)
+            if height[l] < height[r]:
+                l += 1
+            else:
+                r -= 1
+        return max_area
