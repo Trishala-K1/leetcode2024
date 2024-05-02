@@ -1,0 +1,89 @@
+# Binary Tree Right Side View
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+class Solution:
+    def rightSideView(self, root: Optional[TreeNode]) -> List[int]:
+        if not root:
+            return None
+        queue = []
+        queue.append(root)
+        most_right = []
+        while len(queue) > 0:
+            n = len(queue)
+            most_right.append(queue[-1].val)
+            for i in range(n):
+                element = queue.pop(0)
+                if element.left:
+                    queue.append(element.left)
+                if element.right:
+                    queue.append(element.right)
+        return most_right
+
+
+# Longest Increasing Path in a Matrix
+class Solution:
+
+    def solve(self, i, j, matrix, m, n, dp):
+        if dp[i][j]!=-1:
+            return dp[i][j]
+        ans = 0
+
+        # up
+        if (i-1>=0 and matrix[i][j]<matrix[i-1][j]):
+            ans = max(ans, self.solve(i-1, j, matrix, m, n, dp))
+        # right
+        if(j+1<n and matrix[i][j]<matrix[i][j+1]):
+            ans = max(ans, self.solve(i, j+1, matrix, m, n, dp))
+        # down
+        if(i+1<m and matrix[i][j]<matrix[i+1][j]):
+            ans = max(ans, self.solve(i+1, j, matrix, m, n, dp))
+        # left
+        if(j-1>=0 and matrix[i][j]<matrix[i][j-1]):
+            ans = max(ans, self.solve(i, j-1, matrix, m, n, dp))
+        
+        dp[i][j] = ans+1
+        return dp[i][j]
+
+    def longestIncreasingPath(self, matrix: List[List[int]]) -> int:
+        m, n = len(matrix), len(matrix[0])
+        ans = -1
+        dp = [[-1]*n for _ in range(m)]
+        for i in range(m):
+            for j in range(n):
+                ans = max(ans, self.solve(i, j, matrix, m, n, dp))
+        return ans
+
+
+# Kth Smallest Element in a BST
+
+class Solution:
+    def kthSmallest(self, root: Optional[TreeNode], k: int) -> int:
+        # Initialize an empty stack to perform in-order traversal
+        stack = []
+        # Initialize a variable to count the number of visited nodes
+        n = 0
+        # Start with the root node
+        temp = root
+
+        # Perform in-order traversal
+        while temp or stack:
+            # Traverse as far left as possible, pushing each node onto the stack
+            while temp:
+                stack.append(temp)
+                temp = temp.left
+            # Once we reach the leftmost node, start popping nodes from the stack
+            temp = stack.pop()
+            # Increment the count of visited nodes
+            n += 1
+            # If count becomes equal to k, return the value of the current node
+            if n == k:
+                return temp.val
+            # Move to the right subtree and continue traversal
+            temp = temp.right
+
+        # Return 0 if kth smallest element not found (shouldn't happen in a valid BST)
+        return 0
