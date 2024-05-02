@@ -1,0 +1,70 @@
+# Bus route
+class Solution(object):
+    def numBusesToDestination(self, routes, source, target):
+        if source == target:
+            return 0
+
+        max_stop = max(max(route) for route in routes)
+        if max_stop < target:
+            return -1
+
+        n = len(routes)
+        min_buses_to_reach = [float('inf')] * (max_stop + 1)
+        min_buses_to_reach[source] = 0
+
+        flag = True
+        while flag:
+            flag = False
+            for route in routes:
+                mini = float('inf')
+                for stop in route:
+                    mini = min(mini, min_buses_to_reach[stop])
+                mini += 1
+                for stop in route:
+                    if min_buses_to_reach[stop] > mini:
+                        min_buses_to_reach[stop] = mini
+                        flag = True
+
+        return min_buses_to_reach[target] if min_buses_to_reach[target] < float('inf') else -1
+
+# Decode String
+class Solution:
+    def decodeString(self, s: str) -> str:
+        # Initialize the stack and the current string
+        stack = []
+        curr_str = ""
+        # Initialize the current number to 0
+        curr_num = 0
+        
+        # Iterate through each character of the string
+        for c in s:
+            # If the character is a digit, update the current number
+            if c.isdigit():
+                curr_num = curr_num * 10 + int(c)
+            # If the character is an opening bracket, push the current number and current string onto the stack
+            elif c == "[":
+                stack.append(curr_num)
+                stack.append(curr_str)
+                # Reset the current number and current string
+                curr_num = 0
+                curr_str = ""
+            # If the character is a closing bracket, repeat the popped characters and push the result back onto the stack
+            elif c == "]":
+                prev_str = stack.pop()
+                prev_num = stack.pop()
+                curr_str = prev_str + curr_str * prev_num
+            # If the character is a letter, append it to the current string
+            else:
+                curr_str += c
+        
+        # Pop any remaining characters from the stack and concatenate them to the final result
+        while stack:
+            curr_str = stack.pop() + curr_str
+        
+        return curr_str
+# class Solution:
+    def peopleAwareOfSecret(self, n: int, d: int, f: int) -> int:
+        dp, md = [1] + [0] * (f - 1), 10**9 + 7
+        for i in range(1, n):
+            dp[i % f] = (md + dp[(i + f - d) % f] - dp[i % f] + (0 if i == 1 else dp[(i - 1) % f])) % md
+        return sum(dp) % md
